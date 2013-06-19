@@ -1,0 +1,15 @@
+.*
+!.gitignore
+
+# C/C++
+*.o
+
+# Emacs
+*~
+
+# Mac
+.DS_Store
+._*
+
+# Win
+Thumbs.db
