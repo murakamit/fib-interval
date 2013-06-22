@@ -4,17 +4,16 @@ class FibInterval
   CAPACITY_MIN = 4
 
   def initialize(capacity)
-    if capacity.is_a? Integer
-      if capacity < CAPACITY_MIN
-        raise "'capacity' is required at least #{CAPACITY_MIN}"
-      end
-      @capacity = capacity
-      @capacity.freeze
-      @fib = generate_fib(capacity)
-      @fib.freeze
-    else
-      raise "argument class error"
-    end
+    raise TypeError unless capacity.is_a? Integer
+    raise "'capacity' >= #{CAPACITY_MIN}" unless capacity >= CAPACITY_MIN
+    @capacity = capacity
+    @capacity.freeze
+    @fib = generate_fib(capacity)
+    @fib.freeze
+  end
+
+  def index_to_delete(ary)
+    raise ArgumentError unless valid_ary? ary
   end
 
   private
@@ -23,5 +22,17 @@ class FibInterval
     x,y = 1,1
     n.times { ary << y; x, y = y, x+y }
     ary
+  end
+
+  def valid_ary?(ary)
+    return false unless ary.is_a? Array
+    prev = nil
+    ary.each { |x|
+      return false unless x.is_a? Integer
+      return false if x < 0
+      return false if prev && (prev < x)
+      prev = x
+    }
+    true
   end
 end

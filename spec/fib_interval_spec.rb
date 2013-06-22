@@ -20,11 +20,11 @@ describe FibInterval do
   end
 
   context "constructed successfully" do
-    let(:n) { 10 }
-    subject { FibInterval.new(n) }
+    let(:arg_capacity) { 5 }
+    subject { FibInterval.new(arg_capacity) }
 
     describe "#capacity" do
-      it { expect(subject.capacity).to eq n }
+      it { expect(subject.capacity).to eq arg_capacity }
     end
 
     describe "#fib" do
@@ -49,8 +49,26 @@ describe FibInterval do
       }
     end
 
-    # describe "#index_to_delete" do
-    #   it { expect(subject.index_to_delete(nil)).to raise_error }
-    # end
+    describe "#index_to_delete" do
+      [nil, "", 0, %w(1 1 1)].each { |x|
+        it { expect { subject.index_to_delete(x) }.to raise_error }
+      }
+
+      [ [-1], [0.0], [0, 1], [1, 0, 1], [1, 2, 3] ].each { |x|
+        it { expect { subject.index_to_delete(x) }.to raise_error }
+      }
+
+      [ [], [0], [0, 0], [1], [1, 1], [1, 1, 0], [3, 2, 1] ].each { |x|
+        it { expect { subject.index_to_delete(x) }.not_to raise_error }
+      }
+
+      [0, 1, 2].each { |x|
+        it {
+          n = subject.capacity + x
+          a = Array.new(n, 0)
+          expect { subject.index_to_delete(a) }.not_to raise_error
+        }
+      }
+    end
   end
 end
