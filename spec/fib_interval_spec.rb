@@ -8,14 +8,14 @@ describe FibInterval do
 
     describe "#new" do
       it { expect { FibInterval.new }.to raise_error }
-      it { expect { FibInterval.new(10) }.not_to raise_error }
-      it { expect { FibInterval.new(FibInterval::CAPACITY_MIN) }.not_to raise_error }
 
-      it { expect { FibInterval.new(nil) }.to raise_error }
-      it { expect { FibInterval.new('10') }.to raise_error }
-      it { expect { FibInterval.new(-1) }.to raise_error }
-      it { expect { FibInterval.new(0) }.to raise_error }
-      it { expect { FibInterval.new(1) }.to raise_error }
+      [FibInterval::CAPACITY_MIN, 10, 20].each { |x|
+        it { expect { FibInterval.new(x) }.not_to raise_error }
+      }
+
+      [nil, -1, 0, 1, 10.0, '10'].each { |x|
+        it { expect { FibInterval.new(x) }.to raise_error }
+      }
     end
   end
 
@@ -48,5 +48,9 @@ describe FibInterval do
         }.to be_true
       }
     end
+
+    # describe "#index_to_delete" do
+    #   it { expect(subject.index_to_delete(nil)).to raise_error }
+    # end
   end
 end
