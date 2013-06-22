@@ -1,14 +1,16 @@
 class FibInterval
-  attr_reader :size, :fib
+  attr_reader :capacity, :fib
 
-  SIZE_MIN = 4
+  CAPACITY_MIN = 4
 
-  def initialize(size)
-    if size.is_a? Integer
-      raise "'size' required at least #{SIZE_MIN}" if size < SIZE_MIN
-      @size = size
-      @size.freeze
-      @fib = generate_fib(size)
+  def initialize(capacity)
+    if capacity.is_a? Integer
+      if capacity < CAPACITY_MIN
+        raise "'capacity' is required at least #{CAPACITY_MIN}"
+      end
+      @capacity = capacity
+      @capacity.freeze
+      @fib = generate_fib(capacity)
       @fib.freeze
     else
       raise "argument class error"

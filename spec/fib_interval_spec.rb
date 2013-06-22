@@ -3,13 +3,13 @@ require_relative '../fib_interval'
 describe FibInterval do
   context "when constructing" do
     describe do
-      it { expect(FibInterval::SIZE_MIN).to be >= 4 }
+      it { expect(FibInterval::CAPACITY_MIN).to be >= 4 }
     end
 
     describe "#new" do
       it { expect { FibInterval.new }.to raise_error }
       it { expect { FibInterval.new(10) }.not_to raise_error }
-      it { expect { FibInterval.new(FibInterval::SIZE_MIN) }.not_to raise_error }
+      it { expect { FibInterval.new(FibInterval::CAPACITY_MIN) }.not_to raise_error }
 
       it { expect { FibInterval.new(nil) }.to raise_error }
       it { expect { FibInterval.new('10') }.to raise_error }
@@ -23,14 +23,14 @@ describe FibInterval do
     let(:n) { 10 }
     subject { FibInterval.new(n) }
 
-    describe "#size" do
-      it { expect(subject.size).to eq n }
+    describe "#capacity" do
+      it { expect(subject.capacity).to eq n }
     end
 
     describe "#fib" do
       let(:fib) { subject.fib }
       it { expect(fib).to be_a_kind_of Array }
-      it { expect(fib.size).to be >= subject.size }
+      it { expect(fib.size).to be >= subject.capacity }
       it { expect(fib).to start_with(1,2) }
       it {
         expect {
