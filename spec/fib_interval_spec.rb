@@ -31,7 +31,7 @@ describe FibInterval do
       let(:fib) { subject.fib }
       it { expect(fib).to be_a_kind_of Array }
       it { expect(fib.size).to be >= subject.size }
-      it { expect(fib.first 2).to eq [1,2] }
+      it { expect(fib).to start_with(1,2) }
       it {
         expect {
           result = true
