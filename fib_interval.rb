@@ -79,7 +79,7 @@ class FibInterval
 
   def virtual_delete(ivals, idx)
     if idx > 0
-      ivalsa[idx - 1] += ivals[idx]
+      ivals[idx - 1] += ivals[idx]
       ivals.delete_at(idx)
     else
       ivals.shift
