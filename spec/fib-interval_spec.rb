@@ -1,4 +1,4 @@
-require_relative '../fib_interval'
+require_relative '../fib-interval'
 
 describe FibInterval do
   context "when constructing" do
