@@ -49,25 +49,31 @@ describe FibInterval do
       }
     end
 
-    describe "#indexes_to_delete ok/ng" do
-      [nil, "", 0, %w(1 1 1)].each { |x|
-        it { expect { subject.indexes_to_delete(x) }.to raise_error }
-      }
-
-      [ [-1], [0.0], [0, 1], [1, 2, 3], [2, 1, 2] ].each { | intervals |
-        it { expect { subject.indexes_to_delete(intervals) }.to raise_error }
-      }
-
+    describe "#indexes_to_delete" do
       [ [], [0], [0, 0], [1], [1, 1], [1, 1, 0], [3, 2, 1] ].each { | intervals |
         it {
           expect { subject.indexes_to_delete(intervals) }.not_to raise_error
         }
       }
+    end
 
+    context "when #indexes_to_delete receive Not-a-Positive-Integer Array" do
+      [nil, "", 0, %w(1 1 1), [0.0], [-1] ].each { |x|
+        it { expect { subject.indexes_to_delete(x) }.to raise_error }
+      }
+    end
+
+    context "when #indexes_to_delete receive ascending intervals" do
+      [ [1, 2, 3], [1, 0, 2], [2, 1, 2] ].each { | intervals |
+        it { expect { subject.indexes_to_delete(intervals) }.to raise_error }
+      }
+    end
+
+    context "when #indexes_to_delete receive overflow intervals" do
       [0, 1, 2].each { | delta |
         it {
           n = subject.holding_capacity + delta
-          intervals = Array.new(n, 0)
+          intervals = Array.new(n, 1)
           expect { subject.indexes_to_delete(intervals) }.not_to raise_error
         }
       }
@@ -126,7 +132,14 @@ describe FibInterval do
       end
 
       context "when intervals contain irregular 0" do
-        # [2, 1, 0, 1],
+        [
+         [1, 0, 1],
+         [1, 0, 0, 1],
+         [1, 0, 1, 0],
+         [2, 0, 1, 0],
+        ].each { | intervals |
+          it { expect { subject.indexes_to_delete intervals }.not_to raise_error }
+        }
       end
     end
   end

@@ -4,9 +4,11 @@ class FibInterval
   HOLDING_CAPACITY_MIN = 4
 
   def initialize(holding_capacity)
-    raise TypeError unless holding_capacity.is_a? Integer
+    unless holding_capacity.is_a? Integer
+      raise TypeError.new("holding_capacity.class = #{holding_capacity.class}")
+    end
     if holding_capacity < HOLDING_CAPACITY_MIN
-      raise "holding_capacity >= #{HOLDING_CAPACITY_MIN}"
+      raise ArgumentError.new("holding_capacity >= #{HOLDING_CAPACITY_MIN}")
     end
     @holding_capacity = holding_capacity
     @holding_capacity.freeze
@@ -17,7 +19,9 @@ class FibInterval
   end
 
   def indexes_to_delete(intervals)
-    raise ArgumentError unless valid_intervals? intervals
+    unless valid_intervals? intervals
+      raise ArgumentError.new("intervals = [#{intervals.join ', '}]")
+    end
     ivals = intervals.dup
     result = []
     while ivals.size >= @intervals_capacity
@@ -45,6 +49,7 @@ class FibInterval
     intervals.each { |x|
       return false unless x.is_a? Integer
       return false if x < 0
+      next if x == 0
       return false if prev && (prev < x)
       prev = x
     }
