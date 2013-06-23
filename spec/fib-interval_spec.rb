@@ -144,11 +144,20 @@ describe FibInterval do
          [1, 1, 0, 1, 0],
          [2, 0, 1, 0, 1],
          [2, 1, 2, 0, 1],
-         [2, 1, 2, 1, 1],
-         [3, 2, 2, 1, 1],
-         [8, 5, 4, 1, 1],
         ].each { | intervals |
           it { expect { subject.indexes_to_delete intervals }.not_to raise_error }
+        }
+      end
+
+
+      context "when intervals contain non-fib" do
+        # holding_capacity   == 6
+        # intervals_capacity == 5
+        [
+         [ [8, 5, 4, 1, 1], [2] ],
+        ].each { | ab |
+          a, b = ab
+          it { expect(subject.indexes_to_delete a).to eq b }
         }
       end
     end
