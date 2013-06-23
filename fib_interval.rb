@@ -20,7 +20,7 @@ class FibInterval
     raise ArgumentError unless valid_intervals? intervals
     ivals = intervals.dup
     result = []
-    while ivals.size >= @holding_capacity
+    while ivals.size >= @intervals_capacity
       idx = get_index(ivals)
       break if idx.nil?
       result << idx

@@ -59,7 +59,9 @@ describe FibInterval do
       }
 
       [ [], [0], [0, 0], [1], [1, 1], [1, 1, 0], [3, 2, 1] ].each { | intervals |
-        it { expect { subject.indexes_to_delete(intervals) }.not_to raise_error }
+        it {
+          expect { subject.indexes_to_delete(intervals) }.not_to raise_error
+        }
       }
 
       [0, 1, 2].each { | delta |
@@ -90,13 +92,18 @@ describe FibInterval do
       end
 
       context "intervals.size == holding_capacity" do
-        # [0, 1].each { | val |
-        #   it {
-        #     intervals = Array.new(holding_capacity, val)
-        #     x = subject.indexes_to_delete intervals
-        #     expect(x).to eq intervals[1 .. -1]
-        #   }
-        # }
+        # holding_capacity   == 6
+        # intervals_capacity == 5
+        [
+         [[0, 0, 0, 0, 0], [0]],
+         [[1, 1, 1, 1, 1], [1]],
+        ].each { | ab |
+          it {
+            a, b = ab
+            x = subject.indexes_to_delete a
+            expect(x).to eq b
+          }
+        }
       end
 
       context "intervals.size > holding_capacity" do
