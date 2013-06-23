@@ -129,6 +129,7 @@ describe FibInterval do
       context "intervals.size > holding_capacity" do
         # holding_capacity   == 6
         # intervals_capacity == 5
+        pending "thinking irregular irregulars"
       end
 
       context "when intervals contain irregular 0" do
