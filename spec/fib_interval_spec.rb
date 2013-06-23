@@ -27,16 +27,16 @@ describe FibInterval do
       it { expect(subject.holding_capacity).to eq holding_capacity }
     end
 
-    describe "#fib" do
-      let(:fib) { subject.fib }
-      it { expect(fib).to be_a_kind_of Array }
-      it { expect(fib.size).to be >= subject.holding_capacity }
-      it { expect(fib).to start_with(1,2) }
+    describe "#fibs" do
+      let(:fibs) { subject.fibs }
+      it { expect(fibs).to be_a_kind_of Array }
+      it { expect(fibs.size).to be >= subject.holding_capacity }
+      it { expect(fibs).to start_with(1,2) }
       it {
         expect {
           result = true
           a,b = 1,2
-          fib[2 .. -1].each { |x|
+          fibs[2 .. -1].each { |x|
             if (a+b) == x
               a,b = b,x
             else
@@ -54,19 +54,19 @@ describe FibInterval do
         it { expect { subject.indexes_to_delete(x) }.to raise_error }
       }
 
-      [ [-1], [0.0], [0, 1], [1, 0, 1], [1, 2, 3] ].each { |x|
-        it { expect { subject.indexes_to_delete(x) }.to raise_error }
+      [ [-1], [0.0], [0, 1], [1, 0, 1], [1, 2, 3] ].each { | intervals |
+        it { expect { subject.indexes_to_delete(intervals) }.to raise_error }
       }
 
-      [ [], [0], [0, 0], [1], [1, 1], [1, 1, 0], [3, 2, 1] ].each { |x|
-        it { expect { subject.indexes_to_delete(x) }.not_to raise_error }
+      [ [], [0], [0, 0], [1], [1, 1], [1, 1, 0], [3, 2, 1] ].each { | intervals |
+        it { expect { subject.indexes_to_delete(intervals) }.not_to raise_error }
       }
 
-      [0, 1, 2].each { |x|
+      [0, 1, 2].each { | delta |
         it {
-          n = subject.holding_capacity + x
-          a = Array.new(n, 0)
-          expect { subject.indexes_to_delete(a) }.not_to raise_error
+          n = subject.holding_capacity + delta
+          intervals = Array.new(n, 0)
+          expect { subject.indexes_to_delete(intervals) }.not_to raise_error
         }
       }
     end
@@ -74,32 +74,32 @@ describe FibInterval do
     describe "#indexes_to_delete don't destroy arg" do
       [0, 1, 2, 3, 10, 100].each { |n|
         it {
-          ary = Array.new(n, 1)
-          ary.freeze
-          expect { subject.indexes_to_delete ary }.not_to raise_error
-          expect(ary.size).to eq n
+          intervals = Array.new(n, 1)
+          intervals.freeze
+          expect { subject.indexes_to_delete intervals }.not_to raise_error
+          expect(intervals.size).to eq n
         }
       }
     end
 
     describe "#indexes_to_delete example" do
-      context "ary.size < holding_capacity" do
+      context "intervals.size < holding_capacity" do
         let(:ret) { subject.indexes_to_delete [] }
         it { expect(ret).to be_a_kind_of Array }
         it { expect(ret).to be_empty }
       end
 
-      context "ary.size == holding_capacity" do
+      context "intervals.size == holding_capacity" do
         # [0, 1].each { | val |
         #   it {
-        #     ary = Array.new(holding_capacity, val)
-        #     x = subject.indexes_to_delete ary
-        #     expect(x).to eq ary[1 .. -1]
+        #     intervals = Array.new(holding_capacity, val)
+        #     x = subject.indexes_to_delete intervals
+        #     expect(x).to eq intervals[1 .. -1]
         #   }
         # }
       end
 
-      context "ary.size > holding_capacity" do
+      context "intervals.size > holding_capacity" do
       end
     end
   end

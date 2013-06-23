@@ -1,5 +1,5 @@
 class FibInterval
-  attr_reader :holding_capacity, :fib
+  attr_reader :holding_capacity, :fibs
 
   HOLDING_CAPACITY_MIN = 4
 
@@ -10,21 +10,21 @@ class FibInterval
     end
     @holding_capacity = holding_capacity
     @holding_capacity.freeze
-    @interval_capacity = holding_capacity - 1
-    @interval_capacity.freeze
-    @fib = generate_fib(holding_capacity)
-    @fib.freeze
+    @intervals_capacity = holding_capacity - 1
+    @intervals_capacity.freeze
+    @fibs = generate_fibs(holding_capacity)
+    @fibs.freeze
   end
 
-  def indexes_to_delete(ary)
-    raise ArgumentError unless valid_ary? ary
-    a = ary.dup
+  def indexes_to_delete(intervals)
+    raise ArgumentError unless valid_intervals? intervals
+    ivals = intervals.dup
     result = []
-    # while a.size >= @holding_capacity
-    #   idx = get_index(a)
+    # while ivals.size >= @holding_capacity
+    #   idx = get_index(ivals)
     #   break if idx.nil?
     #   result << idx
-    #   virtual_delete(a, idx)
+    #   virtual_delete(ivals, idx)
     # end
     result
   end
@@ -32,17 +32,17 @@ class FibInterval
   alias indices_to_delete indexes_to_delete
 
   private
-  def generate_fib(n) # [1, 2, 3, 5, 8, 13, 21, ...]
+  def generate_fibs(n) # [1, 2, 3, 5, 8, 13, 21, ...]
     ary = []
     x,y = 1,1
     n.times { ary << y; x, y = y, x+y }
     ary
   end
 
-  def valid_ary?(ary)
-    return false unless ary.is_a? Array
+  def valid_intervals?(intervals)
+    return false unless intervals.is_a? Array
     prev = nil
-    ary.each { |x|
+    intervals.each { |x|
       return false unless x.is_a? Integer
       return false if x < 0
       return false if prev && (prev < x)
@@ -51,10 +51,43 @@ class FibInterval
     true
   end
 
-  def get_index(ary)
-    return nil if ary.size < @holding_capacity
+  def get_index(intervals)
+    return nil if intervals.size < @intervals_capacity
+
+    i = intervals.index(0)
+    return i if i
+
+    return 1 if intervals[0] <= 2
+    return 0 if (intervals[-2] == 2) && (intervals[-1] <= 1)
+  
+    jprev = nil
+    j0 = nil
+
+    @fibs.each_with_index { | fib, i |
+      j = intervals.index(fib)
+      if jprev
+        case j
+        when nil
+          return 1 + jprev
+        when 0
+          return 1
+        end
+      else
+        j0 = j
+      end
+
+      jprev = j
+    }
+
+    0 # safety-net
   end
 
-  def virtual_delete(result, idx)
+  def virtual_delete(a, idx)
+    if idx > 0
+      a[idx - 1] += a[idx]
+      a.delete_at(idx)
+    else
+      a.shift
+    end
   end
 end
