@@ -19,8 +19,8 @@ describe FibInterval do
     end
   end
 
-  context "when constructed (capacity = 5)" do
-    let(:arg_capacity) { 5 }
+  context "when constructed (capacity = 6)" do
+    let(:arg_capacity) { 6 }
     subject { FibInterval.new(arg_capacity) }
 
     describe "#capacity" do
