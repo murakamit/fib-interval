@@ -137,6 +137,8 @@ describe FibInterval do
          [1, 0, 0, 1],
          [1, 0, 1, 0],
          [2, 0, 1, 0],
+         [2, 1, 2, 0],
+         [2, 1, 2, 1],
         ].each { | intervals |
           it { expect { subject.indexes_to_delete intervals }.not_to raise_error }
         }
