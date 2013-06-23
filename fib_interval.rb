@@ -20,12 +20,12 @@ class FibInterval
     raise ArgumentError unless valid_intervals? intervals
     ivals = intervals.dup
     result = []
-    # while ivals.size >= @holding_capacity
-    #   idx = get_index(ivals)
-    #   break if idx.nil?
-    #   result << idx
-    #   virtual_delete(ivals, idx)
-    # end
+    while ivals.size >= @holding_capacity
+      idx = get_index(ivals)
+      break if idx.nil?
+      result << idx
+      virtual_delete(ivals, idx)
+    end
     result
   end
 
@@ -54,16 +54,14 @@ class FibInterval
   def get_index(intervals)
     return nil if intervals.size < @intervals_capacity
 
-    i = intervals.index(0)
-    return i if i
+    j = intervals.index(0)
+    return j if j
 
     return 1 if intervals[0] <= 2
     return 0 if (intervals[-2] == 2) && (intervals[-1] <= 1)
   
     jprev = nil
-    j0 = nil
-
-    @fibs.each_with_index { | fib, i |
+    @fibs.each { | fib |
       j = intervals.index(fib)
       if jprev
         case j
@@ -72,14 +70,11 @@ class FibInterval
         when 0
           return 1
         end
-      else
-        j0 = j
       end
-
       jprev = j
     }
 
-    0 # safety-net
+    nil # safety-net
   end
 
   def virtual_delete(ivals, idx)
