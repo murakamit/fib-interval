@@ -49,7 +49,7 @@ describe FibInterval do
       }
     end
 
-    describe "#index_to_delete" do
+    describe "#index_to_delete ok/ng" do
       [nil, "", 0, %w(1 1 1)].each { |x|
         it { expect { subject.index_to_delete(x) }.to raise_error }
       }
@@ -69,6 +69,14 @@ describe FibInterval do
           expect { subject.index_to_delete(a) }.not_to raise_error
         }
       }
+    end
+
+    describe "#index_to_delete example" do
+      context "input empty ary" do
+        let(:ret) { subject.index_to_delete [] }
+        it { expect(ret).to be_a_kind_of Array }
+        it { expect(ret).to be_empty }
+      end
     end
   end
 end

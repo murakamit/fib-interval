@@ -14,6 +14,8 @@ class FibInterval
 
   def index_to_delete(ary)
     raise ArgumentError unless valid_ary? ary
+    result = []
+    result
   end
 
   private
