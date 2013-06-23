@@ -82,12 +82,12 @@ class FibInterval
     0 # safety-net
   end
 
-  def virtual_delete(a, idx)
+  def virtual_delete(ivals, idx)
     if idx > 0
-      a[idx - 1] += a[idx]
-      a.delete_at(idx)
+      ivalsa[idx - 1] += ivals[idx]
+      ivals.delete_at(idx)
     else
-      a.shift
+      ivals.shift
     end
   end
 end
