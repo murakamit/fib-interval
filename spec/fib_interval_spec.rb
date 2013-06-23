@@ -49,33 +49,46 @@ describe FibInterval do
       }
     end
 
-    describe "#index_to_delete ok/ng" do
+    describe "#indexes_to_delete ok/ng" do
       [nil, "", 0, %w(1 1 1)].each { |x|
-        it { expect { subject.index_to_delete(x) }.to raise_error }
+        it { expect { subject.indexes_to_delete(x) }.to raise_error }
       }
 
       [ [-1], [0.0], [0, 1], [1, 0, 1], [1, 2, 3] ].each { |x|
-        it { expect { subject.index_to_delete(x) }.to raise_error }
+        it { expect { subject.indexes_to_delete(x) }.to raise_error }
       }
 
       [ [], [0], [0, 0], [1], [1, 1], [1, 1, 0], [3, 2, 1] ].each { |x|
-        it { expect { subject.index_to_delete(x) }.not_to raise_error }
+        it { expect { subject.indexes_to_delete(x) }.not_to raise_error }
       }
 
       [0, 1, 2].each { |x|
         it {
           n = subject.capacity + x
           a = Array.new(n, 0)
-          expect { subject.index_to_delete(a) }.not_to raise_error
+          expect { subject.indexes_to_delete(a) }.not_to raise_error
         }
       }
     end
 
-    describe "#index_to_delete example" do
-      context "input empty ary" do
-        let(:ret) { subject.index_to_delete [] }
+    describe "#indexes_to_delete example" do
+      context "ary.size < arg_capacity" do
+        let(:ret) { subject.indexes_to_delete [] }
         it { expect(ret).to be_a_kind_of Array }
         it { expect(ret).to be_empty }
+      end
+
+      context "ary.size == arg_capacity" do
+        # [0, 1].each { | val |
+        #   it {
+        #     ary = Array.new(arg_capacity, val)
+        #     x = subject.indexes_to_delete ary
+        #     expect(x).to eq ary[1 .. -1]
+        #   }
+        # }
+      end
+
+      context "ary.size > arg_capacity" do
       end
     end
   end

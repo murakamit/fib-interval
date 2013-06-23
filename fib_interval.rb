@@ -12,11 +12,13 @@ class FibInterval
     @fib.freeze
   end
 
-  def index_to_delete(ary)
+  def indexes_to_delete(ary)
     raise ArgumentError unless valid_ary? ary
     result = []
     result
   end
+
+  alias indices_to_delete indexes_to_delete
 
   private
   def generate_fib(n) # [1, 2, 3, 5, 8, 13, 21, ...]
