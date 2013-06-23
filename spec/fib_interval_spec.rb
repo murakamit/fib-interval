@@ -54,7 +54,7 @@ describe FibInterval do
         it { expect { subject.indexes_to_delete(x) }.to raise_error }
       }
 
-      [ [-1], [0.0], [0, 1], [1, 0, 1], [1, 2, 3] ].each { | intervals |
+      [ [-1], [0.0], [0, 1], [1, 2, 3], [2, 1, 2] ].each { | intervals |
         it { expect { subject.indexes_to_delete(intervals) }.to raise_error }
       }
 
@@ -121,6 +121,12 @@ describe FibInterval do
       end
 
       context "intervals.size > holding_capacity" do
+        # holding_capacity   == 6
+        # intervals_capacity == 5
+      end
+
+      context "when intervals contain irregular 0" do
+        # [2, 1, 0, 1],
       end
     end
   end
