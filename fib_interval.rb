@@ -18,7 +18,14 @@ class FibInterval
 
   def indexes_to_delete(ary)
     raise ArgumentError unless valid_ary? ary
-    result = ary.dup
+    a = ary.dup
+    result = []
+    # while a.size >= @holding_capacity
+    #   idx = get_index(a)
+    #   break if idx.nil?
+    #   result << idx
+    #   virtual_delete(a, idx)
+    # end
     result
   end
 
@@ -42,5 +49,12 @@ class FibInterval
       prev = x
     }
     true
+  end
+
+  def get_index(ary)
+    return nil if ary.size < @holding_capacity
+  end
+
+  def virtual_delete(result, idx)
   end
 end

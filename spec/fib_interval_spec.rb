@@ -71,6 +71,17 @@ describe FibInterval do
       }
     end
 
+    describe "#indexes_to_delete don't destroy arg" do
+      [0, 1, 2, 3, 10, 100].each { |n|
+        it {
+          ary = Array.new(n, 1)
+          ary.freeze
+          expect { subject.indexes_to_delete ary }.not_to raise_error
+          expect(ary.size).to eq n
+        }
+      }
+    end
+
     describe "#indexes_to_delete example" do
       context "ary.size < holding_capacity" do
         let(:ret) { subject.indexes_to_delete [] }
