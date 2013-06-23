@@ -59,6 +59,7 @@ capacity = seq.size unless capacity
 puts "capacity = #{capacity}"
 
 fint = FibInterval.new(capacity)
+puts "fibs = #{fint.fibs.join ' '}"
 seq2 = seq.dup
 dels = fint.indexes_to_delete get_intervals(seq)
 dels.each { |i| seq2.delete_at i }

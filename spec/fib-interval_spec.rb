@@ -30,7 +30,7 @@ describe FibInterval do
     describe "#fibs" do
       let(:fibs) { subject.fibs }
       it { expect(fibs).to be_a_kind_of Array }
-      it { expect(fibs.size).to be >= subject.holding_capacity }
+      it { expect(fibs.size).to eq(subject.holding_capacity - 1) }
       it { expect(fibs).to start_with(1,2) }
       it {
         expect {
@@ -65,7 +65,7 @@ describe FibInterval do
 
     context "when #indexes_to_delete receive ascending intervals" do
       [ [1, 2, 3], [1, 0, 2], [2, 1, 2] ].each { | intervals |
-        it { expect { subject.indexes_to_delete(intervals) }.to raise_error }
+        it { expect { subject.indexes_to_delete(intervals) }.not_to raise_error }
       }
     end
 
