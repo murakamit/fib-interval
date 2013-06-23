@@ -3,34 +3,34 @@ require_relative '../fib_interval'
 describe FibInterval do
   context "when constructing" do
     describe do
-      it { expect(FibInterval::CAPACITY_MIN).to be >= 4 }
+      it { expect(FibInterval::HOLDING_CAPACITY_MIN).to be >= 4 }
     end
 
     describe "#new" do
       it { expect { FibInterval.new }.to raise_error }
 
-      [FibInterval::CAPACITY_MIN, 10, 20].each { |x|
-        it { expect { FibInterval.new(x) }.not_to raise_error }
+      [FibInterval::HOLDING_CAPACITY_MIN, 10, 20].each { |n|
+        it { expect { FibInterval.new(n) }.not_to raise_error }
       }
 
-      [nil, -1, 0, 1, 10.0, '10'].each { |x|
-        it { expect { FibInterval.new(x) }.to raise_error }
+      [nil, -1, 0, 1, 10.0, '10'].each { |n|
+        it { expect { FibInterval.new(n) }.to raise_error }
       }
     end
   end
 
-  context "when constructed (capacity = 6)" do
-    let(:arg_capacity) { 6 }
-    subject { FibInterval.new(arg_capacity) }
+  context "when constructed (holding_capacity = 6)" do
+    let(:holding_capacity) { 6 }
+    subject { FibInterval.new(holding_capacity) }
 
-    describe "#capacity" do
-      it { expect(subject.capacity).to eq arg_capacity }
+    describe "#holding_capacity" do
+      it { expect(subject.holding_capacity).to eq holding_capacity }
     end
 
     describe "#fib" do
       let(:fib) { subject.fib }
       it { expect(fib).to be_a_kind_of Array }
-      it { expect(fib.size).to be >= subject.capacity }
+      it { expect(fib.size).to be >= subject.holding_capacity }
       it { expect(fib).to start_with(1,2) }
       it {
         expect {
@@ -64,7 +64,7 @@ describe FibInterval do
 
       [0, 1, 2].each { |x|
         it {
-          n = subject.capacity + x
+          n = subject.holding_capacity + x
           a = Array.new(n, 0)
           expect { subject.indexes_to_delete(a) }.not_to raise_error
         }
@@ -72,23 +72,23 @@ describe FibInterval do
     end
 
     describe "#indexes_to_delete example" do
-      context "ary.size < arg_capacity" do
+      context "ary.size < holding_capacity" do
         let(:ret) { subject.indexes_to_delete [] }
         it { expect(ret).to be_a_kind_of Array }
         it { expect(ret).to be_empty }
       end
 
-      context "ary.size == arg_capacity" do
+      context "ary.size == holding_capacity" do
         # [0, 1].each { | val |
         #   it {
-        #     ary = Array.new(arg_capacity, val)
+        #     ary = Array.new(holding_capacity, val)
         #     x = subject.indexes_to_delete ary
         #     expect(x).to eq ary[1 .. -1]
         #   }
         # }
       end
 
-      context "ary.size > arg_capacity" do
+      context "ary.size > holding_capacity" do
       end
     end
   end

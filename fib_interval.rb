@@ -1,20 +1,24 @@
 class FibInterval
-  attr_reader :capacity, :fib
+  attr_reader :holding_capacity, :fib
 
-  CAPACITY_MIN = 4
+  HOLDING_CAPACITY_MIN = 4
 
-  def initialize(capacity)
-    raise TypeError unless capacity.is_a? Integer
-    raise "'capacity' >= #{CAPACITY_MIN}" unless capacity >= CAPACITY_MIN
-    @capacity = capacity
-    @capacity.freeze
-    @fib = generate_fib(capacity)
+  def initialize(holding_capacity)
+    raise TypeError unless holding_capacity.is_a? Integer
+    if holding_capacity < HOLDING_CAPACITY_MIN
+      raise "holding_capacity >= #{HOLDING_CAPACITY_MIN}"
+    end
+    @holding_capacity = holding_capacity
+    @holding_capacity.freeze
+    @interval_capacity = holding_capacity - 1
+    @interval_capacity.freeze
+    @fib = generate_fib(holding_capacity)
     @fib.freeze
   end
 
   def indexes_to_delete(ary)
     raise ArgumentError unless valid_ary? ary
-    result = []
+    result = ary.dup
     result
   end
 
