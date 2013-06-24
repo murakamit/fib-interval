@@ -32,7 +32,7 @@ describe FibInterval do
       it { expect(fibs).to be_a_kind_of Array }
       it { expect(fibs.size).to eq(subject.holding_capacity - 1) }
       it { expect(fibs).to start_with(1,2) }
-      it {
+      it do
         expect {
           result = true
           a,b = 1,2
@@ -46,11 +46,11 @@ describe FibInterval do
           }
           result
         }.to be_true
-      }
+      end
     end
 
     describe "#indexes_to_delete" do
-      [ [], [0], [0, 0], [1], [1, 1], [1, 1, 0], [3, 2, 1] ].each { | intervals |
+      [ [], [0], [0,0], [1], [1,1], [1,1,0], [3,2,1] ].each { | intervals |
         it {
           expect { subject.indexes_to_delete(intervals) }.not_to raise_error
         }
@@ -69,24 +69,14 @@ describe FibInterval do
       }
     end
 
-    context "when #indexes_to_delete receive overflow intervals" do
-      [0, 1, 2].each { | delta |
-        it {
-          n = subject.holding_capacity + delta
-          intervals = Array.new(n, 1)
-          expect { subject.indexes_to_delete(intervals) }.not_to raise_error
-        }
-      }
-    end
-
     describe "#indexes_to_delete don't destroy arg" do
       [0, 1, 2, 3, 10, 100].each { |n|
-        it {
+        it do
           intervals = Array.new(n, 1)
           intervals.freeze
           expect { subject.indexes_to_delete intervals }.not_to raise_error
           expect(intervals.size).to eq n
-        }
+        end
       }
     end
 
@@ -120,8 +110,7 @@ describe FibInterval do
         ].each { | ab |
           it {
             a, b = ab
-            x = subject.indexes_to_delete a
-            expect(x).to eq b
+            expect(subject.indexes_to_delete a).to eq b
           }
         }
       end
@@ -129,7 +118,27 @@ describe FibInterval do
       context "intervals.size > holding_capacity" do
         # holding_capacity   == 6
         # intervals_capacity == 5
-        pending "thinking irregular irregulars"
+        let(:valid_full_intervals) { [8, 5, 3, 2, 1] }
+        let(:delta) { 10 }
+        let(:ary0) { Array.new(delta, 0) }
+
+        it {
+          intervals2 = valid_full_intervals + ary0
+          dels = subject.indexes_to_delete intervals2
+          expect(dels).to eq dels.uniq
+        }
+
+
+        # it "holds the newest" do
+        #   delta = 100
+        #   intervals2 = valid_full_intervals + Array.new(delta, 0)
+        #   dels = subject.indexes_to_delete intervals2
+        #   a = []
+        #   delta.times { |i| a << (valid_full_intervals.size + i) }
+        #   a.unshift(valid_full_intervals.size - 1)
+        #   a.pop
+        #   expect(dels).to eq a
+        # end
       end
 
       context "when intervals contain irregular 0" do
