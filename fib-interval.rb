@@ -99,7 +99,6 @@ class FibInterval
     if idx > 0
       ivals[idx - 1] += ivals[idx]
       ivals.delete_at(idx)
-      # ivals[idx] = nil
     else
       ivals.shift
     end
