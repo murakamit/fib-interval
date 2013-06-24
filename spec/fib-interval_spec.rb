@@ -118,12 +118,20 @@ describe FibInterval do
         # intervals_capacity == 5
         let(:valid_full_intervals) { [8, 5, 3, 2, 1] }
         let(:delta) { 10 }
-        let(:ary1) { Array.new(delta, 1) }
 
         it {
-          intervals2 = valid_full_intervals + ary1
+          ary0 = Array.new(delta, 0)
+          intervals2 = valid_full_intervals + ary0
           i = subject.index_to_delete intervals2
           expect(i).to eq valid_full_intervals.size
+        }
+
+        it {
+          pending "fibs must generate dynamically?"
+          ary1 = Array.new(delta, 1)
+          intervals2 = valid_full_intervals + ary1
+          i = subject.index_to_delete intervals2
+          # expect(i).to eq valid_full_intervals.size
         }
       end
 

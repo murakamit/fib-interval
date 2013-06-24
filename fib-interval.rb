@@ -5,35 +5,26 @@ class FibInterval
 
   def initialize(holding_capacity)
     unless holding_capacity.is_a? Integer
-      raise TypeError.new("holding_capacity.class = #{holding_capacity.class}")
+      raise TypeError.new "holding_capacity.class = #{holding_capacity.class}"
     end
     if holding_capacity < HOLDING_CAPACITY_MIN
-      raise ArgumentError.new("holding_capacity >= #{HOLDING_CAPACITY_MIN}")
+      raise ArgumentError.new "holding_capacity >= #{HOLDING_CAPACITY_MIN}"
     end
     @holding_capacity = holding_capacity
     @holding_capacity.freeze
     @intervals_capacity = holding_capacity - 1
     @intervals_capacity.freeze
-    @fibs = generate_fibs(@intervals_capacity)
+    @fibs = generate_fibs @intervals_capacity
     @fibs.freeze
   end
 
-  def indexes_to_delete(intervals)
-    unless valid_intervals? intervals
-      raise ArgumentError.new("intervals = [#{intervals.join ', '}]")
+  def index_to_delete(intervals)
+    if valid_intervals? intervals
+      get_index(intervals)
+    else
+      raise ArgumentError.new "intervals = [#{intervals.join ', '}]"
     end
-    ivals = intervals.dup
-    result = []
-    while ivals.size >= @intervals_capacity
-      idx = get_index(ivals)
-      break if idx.nil?
-      result << idx
-      virtual_delete(ivals, idx)
-    end
-    result
   end
-
-  alias indices_to_delete indexes_to_delete
 
   private
   def generate_fibs(length) # [1, 2, 3, 5, 8, 13, 21, ...]
@@ -93,14 +84,5 @@ class FibInterval
     }
 
     nil # safety-net
-  end
-
-  def virtual_delete(ivals, idx)
-    if idx > 0
-      ivals[idx - 1] += ivals[idx]
-      ivals.delete_at(idx)
-    else
-      ivals.shift
-    end
   end
 end
