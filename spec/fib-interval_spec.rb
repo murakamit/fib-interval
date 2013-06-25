@@ -41,14 +41,27 @@ describe FibInterval do
 
   describe FibInterval::FibHelper do
     let(:fib_len) { 5 }
-    let(:intervals) { FibInterval.generate_fibs fib_len }
+    let(:fibs) { FibInterval.generate_fibs fib_len }
     subject {
       class Spy < FibInterval::FibHelper
         def initialize(x);  super x; end
-        def floor(x); suepr x; end
+        def floor(x); super x; end
         def last_skipped(x) super x; end
       end
-      Spy.new intervals
+      Spy.new fibs
+    }
+
+    it { expect(fibs).to eq [1, 2, 3, 5, 8] }
+
+    { 3 => 3, 4 => 3, 5 => 5 }.each_pair { | x,y |
+      it { expect(subject.floor x).to eq y }
+    }
+
+    [
+     [ [8, 5, 3, 2, 1], nil ]
+    ].each { | ab |
+      a, b = ab
+      it { expect(subject.last_skipped a).to eq b }
     }
   end
 

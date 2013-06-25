@@ -43,9 +43,9 @@ module FibInterval
 
     def floor(x)
       result = nil
-      @fibs.each_with_index { | f,i |
+      @fibs.each { |f|
         break if f > x
-        result = [f,i]
+        result = f
       }
       result
     end
@@ -53,9 +53,9 @@ module FibInterval
     def last_skipped(intervals)
       result = nil
       intervals.each_with_index { | x,i |
-        a = floor(x)
-        break if a.nil?
-        result = [a.first, i]
+        f = floor(x)
+        break if f.nil?
+        result = [f, i]
       }
       result
     end
