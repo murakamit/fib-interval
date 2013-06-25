@@ -6,7 +6,7 @@ REX_OPT = /^-([1-9][01-9]*)$/
 REX_INT = /^[1-9][01-9]*$/
 
 def usage_then_exit
-  puts "Usage: #{$0} [-capacity] n1 [n2] [n3] ..."
+  puts "Usage: #{$0} n1 [n2] [n3] ..."
   puts "(ex) #{$0} 1 2 3 4 5"
   exit 1
 end
@@ -44,24 +44,13 @@ end
 
 usage_then_exit if ARGV.empty?
 
-capacity = nil
-m = REX_OPT.match ARGV.first
-if m
-  capacity = m[1].to_i
-  ARGV.shift
-end
-
 seq = []
 ARGV.each { |s| seq << s.to_i if REX_INT =~ s }
 usage_then_exit if seq.empty?
+puts "fibs = #{FibInterval.generate_fibs(seq.size).join ' '}"
 
-capacity = seq.size unless capacity
-puts "capacity = #{capacity}"
-puts "fibs = #{FibInterval.generate_fibs(capacity-1).join ' '}"
-
-fint = FibInterval.new(capacity)
 seq2 = seq.dup
-i = fint.index_to_delete get_intervals(seq)
+i = FibInterval.index_to_delete get_intervals(seq)
 seq2.delete_at i
 
 show(seq, i)

@@ -1,6 +1,4 @@
-class FibInterval
-  attr_reader :holding_capacity, :fibs
-
+module FibInterval
   HOLDING_CAPACITY_MIN = 4
 
   def self.generate_fibs(length) # [1, 2, 3, 5, 8, 13, 21, ...]
@@ -19,29 +17,17 @@ class FibInterval
     true
   end
 
-  def initialize(holding_capacity)
-    unless holding_capacity.is_a? Integer
-      raise TypeError.new "holding_capacity.class = #{holding_capacity.class}"
-    end
-    if holding_capacity < HOLDING_CAPACITY_MIN
-      raise ArgumentError.new "holding_capacity >= #{HOLDING_CAPACITY_MIN}"
-    end
-    @holding_capacity = holding_capacity
-    @holding_capacity.freeze
-    @intervals_capacity = holding_capacity - 1
-    @intervals_capacity.freeze
-  end
-
-  def index_to_delete(intervals)
-    if self.class.valid_intervals? intervals
-      get_index(intervals)
-    else
+  def self.index_to_delete(intervals)
+    unless valid_intervals? intervals
       raise ArgumentError.new "intervals = [#{intervals.join ', '}]"
     end
+    return nil if intervals.empty?
+    i = intervals.index(0)
+    ( i ) ? i : main(intervals)
   end
 
-  private
-  def search_partial_fib_max(intervals, fibs)
+  protected
+  def self.search_partial_fib_max(intervals, fibs)
     result = nil
     intervals.reverse.each_with_index { | x, i |
       next if x < 2
@@ -53,13 +39,8 @@ class FibInterval
     result
   end
 
-  def get_index(intervals)
-    return nil if intervals.size < @intervals_capacity
-
-    j = intervals.index(0)
-    return j if j
-
-    fibs = self.class.generate_fibs intervals.length
+  def self.main(intervals)
+    fibs = generate_fibs intervals.length
     partial_fib_max = search_partial_fib_max(intervals, fibs)
 
 #next
