@@ -19,7 +19,12 @@ module FibInterval
     unless valid_intervals? intervals
       raise ArgumentError.new "intervals = [#{intervals.join ', '}]"
     end
-    return nil if intervals.empty?
+    case intervals.size
+    when 0
+      return nil
+    when 1
+      return 0
+    end
     i = intervals.index(0)
     ( i ) ? i : main(intervals)
   end
@@ -38,6 +43,7 @@ module FibInterval
   end
 
   def self.main(intervals)
+     # (intervals.size >= 2) && (intervals.include?(0) == false)
     fibs = generate_fibs intervals.length
     partial_fib_max = search_partial_fib_max(intervals, fibs)
 
