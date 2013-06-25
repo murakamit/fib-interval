@@ -1,6 +1,4 @@
 module FibInterval
-  HOLDING_CAPACITY_MIN = 4
-
   def self.generate_fibs(length) # [1, 2, 3, 5, 8, 13, 21, ...]
     ary = []
     x,y = 1,1

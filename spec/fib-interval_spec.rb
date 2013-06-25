@@ -1,10 +1,6 @@
 require_relative '../fib-interval'
 
 describe FibInterval do
-  describe do
-    it { expect(FibInterval::HOLDING_CAPACITY_MIN).to be >= 4 }
-  end
-
   describe "::generate_fibs" do
     let(:fibs) { FibInterval.generate_fibs 5 }
     it { expect(fibs).to be_a_kind_of Array }
