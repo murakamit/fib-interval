@@ -19,71 +19,100 @@ module FibInterval
     unless valid_intervals? intervals
       raise ArgumentError.new "intervals = [#{intervals.join ', '}]"
     end
+
     case intervals.size
     when 0
       return nil
     when 1
       return 0
     end
+
     i = intervals.index(0)
     ( i ) ? i : main(intervals)
   end
 
   protected
-  def self.search_partial_fib_max(intervals, fibs)
-    result = nil
-    intervals.reverse.each_with_index { | x, i |
-      next if x < 2
-      break unless fibs.include? x
-      break if result && (x <= result.first)
-      result = [x, i]
+
+  class FibHelper
+    attr_reader :fibs, :rfibs
+
+    def initialize(fibs)
+      @fibs = fibs
+      @rfibs = fibs.reverse
+    end
+
+    def floor(x)
+      result = nil
+      @fibs.each_with_index { | f,i |
+        break if f > x
+        result = [f,i]
+      }
+      result
+    end
+
+    def last_skipped(intervals)
+      result = nil
+      intervals.each_with_index { | x,i |
+        a = floor(x)
+        break if a.nil?
+        result = [a.first, i]
+      }
+      result
+    end
+  end
+
+  def desc_part(intervals) # 5 4 3 2 2 | 3 3 4 2 1
+    prev = nil
+    intervals.each_with_index { | x, i |
+      return intervals[0 ... i] if prev && (prev < x) # [0, i)
+      prev = x
     }
-    result[1] = intervals.size + result[1] if result # adjust negative index
-    result
+    intervals
   end
 
   def self.main(intervals)
-     # (intervals.size >= 2) && (intervals.include?(0) == false)
-    fibs = generate_fibs intervals.length
-    partial_fib_max = search_partial_fib_max(intervals, fibs)
-
-#next
+    original = intervals
+    fibs = generate_fibs original.length
+    # intervals = desc_part intervals
 
 
-    return 1 if intervals[0] <= 2
+    # ignore_last = intervals[0 .. -2]
+    # ignore_last.each_with_index { | x, i |
+    #   return i + 1 if x < rfibs[i]
+    # }
 
-    intervals.each_with_index { | x, i |
-      return i unless @fibs.include? x
-    }
+    # 0
 
-    prev = nil
-    intervals.each_with_index { | x, i |
-      if prev
-        if prev == x
-          return i if x != 1
-        elsif prev < x
-          return i
-        end
-      end
-      prev = x
-    }
 
-    return 0 if (intervals[-2] == 2) && (intervals[-1] <= 1)
+    #####
+    # prev = nil
+    # intervals.each_with_index { | x, i |
+    #   if prev
+    #     if prev == x
+    #       return i if x != 1
+    #     elsif prev < x
+    #       return i
+    #     end
+    #   end
+    #   prev = x
+    # }
+
+    # return 0 if (intervals[-2] == 2) && (intervals[-1] <= 1)
   
-    jprev = nil
-    @fibs.each { | fib |
-      j = intervals.index(fib)
-      if jprev
-        case j
-        when nil
-          return 1 + jprev
-        when 0
-          return 1
-        end
-      end
-      jprev = j
-    }
+    # jprev = nil
+    # @fibs.each { | fib |
+    #   j = intervals.index(fib)
+    #   if jprev
+    #     case j
+    #     when nil
+    #       return 1 + jprev
+    #     when 0
+    #       return 1
+    #     end
+    #   end
+    #   jprev = j
+    # }
 
-    nil # safety-net
+    # nil # safety-net
   end
 end

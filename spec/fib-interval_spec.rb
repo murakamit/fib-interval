@@ -39,6 +39,19 @@ describe FibInterval do
     end
   end
 
+  describe FibInterval::FibHelper do
+    let(:fib_len) { 5 }
+    let(:intervals) { FibInterval.generate_fibs fib_len }
+    subject {
+      class Spy < FibInterval::FibHelper
+        def initialize(x);  super x; end
+        def floor(x); suepr x; end
+        def last_skipped(x) super x; end
+      end
+      Spy.new intervals
+    }
+  end
+
   describe "#index_to_delete" do
     describe "don't destroy arg" do
       [0, 1, 2, 3, 10, 100].each { |n|
