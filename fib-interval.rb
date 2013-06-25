@@ -3,6 +3,22 @@ class FibInterval
 
   HOLDING_CAPACITY_MIN = 4
 
+  def self.generate_fibs(length) # [1, 2, 3, 5, 8, 13, 21, ...]
+    ary = []
+    x,y = 1,1
+    length.times { ary << y; x, y = y, x+y }
+    ary
+  end
+
+  def self.valid_intervals?(intervals)
+    return false unless intervals.is_a? Array
+    intervals.each { |x|
+      return false unless x.is_a? Integer
+      return false if x < 0
+    }
+    true
+  end
+
   def initialize(holding_capacity)
     unless holding_capacity.is_a? Integer
       raise TypeError.new "holding_capacity.class = #{holding_capacity.class}"
@@ -14,12 +30,10 @@ class FibInterval
     @holding_capacity.freeze
     @intervals_capacity = holding_capacity - 1
     @intervals_capacity.freeze
-    @fibs = generate_fibs @intervals_capacity
-    @fibs.freeze
   end
 
   def index_to_delete(intervals)
-    if valid_intervals? intervals
+    if self.class.valid_intervals? intervals
       get_index(intervals)
     else
       raise ArgumentError.new "intervals = [#{intervals.join ', '}]"
@@ -27,20 +41,16 @@ class FibInterval
   end
 
   private
-  def generate_fibs(length) # [1, 2, 3, 5, 8, 13, 21, ...]
-    ary = []
-    x,y = 1,1
-    length.times { ary << y; x, y = y, x+y }
-    ary
-  end
-
-  def valid_intervals?(intervals)
-    return false unless intervals.is_a? Array
-    intervals.each { |x|
-      return false unless x.is_a? Integer
-      return false if x < 0
+  def search_partial_fib_max(intervals, fibs)
+    result = nil
+    intervals.reverse.each_with_index { | x, i |
+      next if x < 2
+      break unless fibs.include? x
+      break if result && (x <= result.first)
+      result = [x, i]
     }
-    true
+    result[1] = intervals.size + result[1] if result # adjust negative index
+    result
   end
 
   def get_index(intervals)
@@ -48,6 +58,12 @@ class FibInterval
 
     j = intervals.index(0)
     return j if j
+
+    fibs = self.class.generate_fibs intervals.length
+    partial_fib_max = search_partial_fib_max(intervals, fibs)
+
+#next
+
 
     return 1 if intervals[0] <= 2
 

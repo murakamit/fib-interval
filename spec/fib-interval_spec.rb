@@ -1,72 +1,72 @@
 require_relative '../fib-interval'
 
 describe FibInterval do
-  context "when constructing" do
-    describe do
-      it { expect(FibInterval::HOLDING_CAPACITY_MIN).to be >= 4 }
+  describe do
+    it { expect(FibInterval::HOLDING_CAPACITY_MIN).to be >= 4 }
+  end
+
+  describe "::generate_fibs" do
+    let(:fibs) { FibInterval.generate_fibs 5 }
+    it { expect(fibs).to be_a_kind_of Array }
+    it { expect(fibs).to start_with(1,2) }
+    it "[1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, ...]" do
+      expect {
+        result = true
+        a,b = 1,2
+        fibs[2 .. -1].each { |x|
+          if (a+b) == x
+            a,b = b,x
+          else
+            result = false
+            break
+          end
+        }
+        result
+      }.to be_true
+    end
+  end
+
+  describe "::valid_intervals?" do
+    context do
+      [nil, "", 0, %w(1 1 1), [0.0], [-1] ].each { |x|
+        it { expect(FibInterval.valid_intervals? x).to be_false }
+      }
     end
 
-    describe "#new" do
-      it { expect { FibInterval.new }.to raise_error }
-
-      [FibInterval::HOLDING_CAPACITY_MIN, 10, 20].each { |n|
-        it { expect { FibInterval.new(n) }.not_to raise_error }
+    context do
+      [
+       [], [0], [0, 0], [1], [1, 1], [1, 1, 0], [0, 1, 1],
+       [1, 2, 3], [3, 2, 1], [1, 0, 2], [2, 1, 2],
+      ].each { |a|
+        it { expect(FibInterval.valid_intervals? a).to be_true }
       }
+    end
+  end
 
+  describe "#new" do
+    context "no arg" do
+      it { expect { FibInterval.new }.to raise_error }
+    end
+
+    context do
       [nil, -1, 0, 1, 10.0, '10'].each { |n|
-        it { expect { FibInterval.new(n) }.to raise_error }
+        it { expect { FibInterval.new n }.to raise_error }
+      }
+    end
+
+    context do
+      [FibInterval::HOLDING_CAPACITY_MIN, 10, 20].each { |n|
+        it { expect { FibInterval.new n }.not_to raise_error }
       }
     end
   end
 
   context "when constructed (holding_capacity = 6)" do
     let(:holding_capacity) { 6 }
-    subject { FibInterval.new(holding_capacity) }
+    subject { FibInterval.new holding_capacity }
 
     describe "#holding_capacity" do
       it { expect(subject.holding_capacity).to eq holding_capacity }
-    end
-
-    describe "#fibs" do
-      let(:fibs) { subject.fibs }
-      it { expect(fibs).to be_a_kind_of Array }
-      it { expect(fibs.size).to eq(subject.holding_capacity - 1) }
-      it { expect(fibs).to start_with(1,2) }
-      it do
-        expect {
-          result = true
-          a,b = 1,2
-          fibs[2 .. -1].each { |x|
-            if (a+b) == x
-              a,b = b,x
-            else
-              result = false
-              break
-            end
-          }
-          result
-        }.to be_true
-      end
-    end
-
-    describe "#index_to_delete" do
-      [ [], [0], [0,0], [1], [1,1], [1,1,0], [3,2,1] ].each { | intervals |
-        it {
-          expect { subject.index_to_delete(intervals) }.not_to raise_error
-        }
-      }
-    end
-
-    context "when #index_to_delete receive Not-a-Positive-Integer Array" do
-      [nil, "", 0, %w(1 1 1), [0.0], [-1] ].each { |x|
-        it { expect { subject.index_to_delete(x) }.to raise_error }
-      }
-    end
-
-    context "when #index_to_delete receive ascending intervals" do
-      [ [1, 2, 3], [1, 0, 2], [2, 1, 2] ].each { | intervals |
-        it { expect { subject.index_to_delete(intervals) }.not_to raise_error }
-      }
     end
 
     describe "#index_to_delete don't destroy arg" do
@@ -107,6 +107,7 @@ describe FibInterval do
          [ [8, 5, 3, 2, 1], 0 ],
         ].each { | ab |
           it {
+            pending "before branch"
             a, b = ab
             expect(subject.index_to_delete a).to eq b
           }
@@ -120,6 +121,7 @@ describe FibInterval do
         let(:delta) { 10 }
 
         it {
+          pending "before branch"
           ary0 = Array.new(delta, 0)
           intervals2 = valid_full_intervals + ary0
           i = subject.index_to_delete intervals2
@@ -139,17 +141,16 @@ describe FibInterval do
         # holding_capacity   == 6
         # intervals_capacity == 5
         [
+         [0, 1, 1, 1, 1],
          [1, 0, 1, 1, 1],
-         [1, 1, 0, 1, 1],
          [1, 1, 1, 1, 0],
-         [1, 0, 0, 1, 1],
          [1, 1, 0, 0, 1],
-         [1, 0, 1, 0, 1],
-         [1, 1, 0, 1, 0],
          [2, 0, 1, 0, 1],
-         [2, 1, 2, 0, 1],
         ].each { | intervals |
-          it { expect { subject.index_to_delete intervals }.not_to raise_error }
+          it {
+            pending "before branch"
+            expect { subject.index_to_delete intervals }.not_to raise_error
+          }
         }
       end
 
@@ -160,7 +161,10 @@ describe FibInterval do
          [ [8, 5, 4, 1, 1], 2 ],
         ].each { | ab |
           a, b = ab
-          it { expect(subject.index_to_delete a).to eq b }
+          it {
+            pending "before branch"
+            expect(subject.index_to_delete a).to eq b
+          }
         }
       end
     end

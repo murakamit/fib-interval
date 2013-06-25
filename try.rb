@@ -31,9 +31,9 @@ def get_reverse_accum(ivals)
   result.reverse
 end
 
-def show(seq, marks = [])
+def show(seq, mark = nil)
   a = seq.dup
-  marks.each { |i| a[i] = "<#{a[i]}>" }
+  a[mark] = "<#{a[mark]}>" if mark
   delimiter = ' '
   puts "sequence: #{a.join(delimiter)}"
   ivals = get_intervals(seq)
@@ -57,13 +57,13 @@ usage_then_exit if seq.empty?
 
 capacity = seq.size unless capacity
 puts "capacity = #{capacity}"
+puts "fibs = #{FibInterval.generate_fibs(capacity-1).join ' '}"
 
 fint = FibInterval.new(capacity)
-puts "fibs = #{fint.fibs.join ' '}"
 seq2 = seq.dup
-dels = fint.indexes_to_delete get_intervals(seq)
-dels.each { |i| seq2.delete_at i }
+i = fint.index_to_delete get_intervals(seq)
+seq2.delete_at i
 
-show(seq, dels)
+show(seq, i)
 puts '-----'
 show(seq2)
