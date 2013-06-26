@@ -2,7 +2,6 @@
 
 require_relative 'fib-interval'
 
-REX_OPT = /^-([1-9][01-9]*)$/
 REX_INT = /^[1-9][01-9]*$/
 
 def usage_then_exit
@@ -51,7 +50,7 @@ puts "fibs = #{FibInterval.generate_fibs(seq.size).join ' '}"
 
 seq2 = seq.dup
 i = FibInterval.index_to_delete get_intervals(seq)
-seq2.delete_at i
+seq2.delete_at i if i
 
 show(seq, i)
 puts '-----'
