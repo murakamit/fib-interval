@@ -58,13 +58,48 @@ describe FibInterval do
 
     it { expect(fibs).to eq [1, 2, 3, 5, 8] }
 
-    describe "::floor" do
-      { 3 => 3, 4 => 3, 5 => 5, 6 => 5, 9 => 8 }.each_pair { | x,y |
+    describe "#floor" do
+      {
+        0 => nil,
+        1 => 1,
+        2 => 2,
+        3 => 3,
+        4 => 3,
+        5 => 5,
+        6 => 5,
+        7 => 5,
+        8 => 8,
+        9 => 8,
+        100 => 8, # max(fibs) == 8
+      }.each_pair { | x,y |
         it { expect(subject.floor x).to eq y }
       }
     end
 
-    describe "::last_skipped" do
+    describe "#to_floor" do
+      [
+       [ [],  [] ],
+       [ [1], [1] ],
+       [ [1, 1, 1], [1, 1, 1] ],
+       [ [2, 1, 1], [2, 1, 1] ],
+       [ [2, 2, 2], [2, 2, 2] ],
+       [ [3, 2, 1], [3, 2, 1] ],
+       [ [4, 2, 1], [3, 2, 1] ],
+       [ [5, 2, 1], [5, 2, 1] ],
+       [ [5, 3, 1], [5, 3, 1] ],
+       [ [9, 8, 7, 6, 5, 4, 3, 2, 1], [8, 8, 5, 5, 5, 3, 3, 2, 1] ],
+      ].each { | ab |
+        a, b = ab
+        it {
+          f = fibs
+          n = a.size
+          f = FibInterval.generate_fibs(n) if n > fib_len
+          expect(subject.to_floor(a, f)).to eq b
+        }
+      }
+    end
+
+    describe "#last_skipped" do
       [
        [ [ 8, 5, 3, 2, 1], nil ],
        [ [ 9, 5, 3, 2, 1], nil ],
@@ -110,20 +145,20 @@ describe FibInterval do
        [ [2, 1, 1, 1, 1], 1 ],
        [ [3, 1, 1, 1, 1], 2 ],
        [ [3, 2, 1, 1, 1], 1 ],
-       [ [5, 1, 1, 1, 1], 2 ],
-       [ [5, 2, 1, 1, 1], 2 ],
-       [ [5, 3, 1, 1, 1], 3 ],
-       [ [5, 3, 2, 1, 1], 1 ],
-       [ [8, 2, 1, 1, 1], 2 ],
-       [ [8, 3, 1, 1, 1], 3 ],
-       [ [8, 3, 2, 1, 1], 2 ],
-       [ [8, 5, 1, 1, 1], 3 ],
-       [ [8, 5, 2, 1, 1], 3 ],
-       [ [8, 5, 3, 1, 1], 4 ],
-       [ [8, 5, 3, 2, 1], 0 ],
+       # [ [5, 1, 1, 1, 1], 2 ],
+       # [ [5, 2, 1, 1, 1], 2 ],
+       # [ [5, 3, 1, 1, 1], 3 ],
+       # [ [5, 3, 2, 1, 1], 1 ],
+       # [ [8, 2, 1, 1, 1], 2 ],
+       # [ [8, 3, 1, 1, 1], 3 ],
+       # [ [8, 3, 2, 1, 1], 2 ],
+       # [ [8, 5, 1, 1, 1], 3 ],
+       # [ [8, 5, 2, 1, 1], 3 ],
+       # [ [8, 5, 3, 1, 1], 4 ],
+       # [ [8, 5, 3, 2, 1], 0 ],
       ].each { | ab |
         it {
-          pending "before branch"
+          pending "after to_floor"
           a, b = ab
           expect(FibInterval.index_to_delete a).to eq b
         }
@@ -132,26 +167,41 @@ describe FibInterval do
 
     context "irregular 0" do
       [
-       [0, 1, 1, 1, 1],
-       [1, 0, 1, 1, 1],
-       [1, 1, 1, 1, 0],
-       [1, 1, 0, 0, 1],
-       [2, 0, 1, 0, 1],
-      ].each { | intervals |
+       [ [0, 1, 1, 1, 1], 0],
+       [ [1, 0, 1, 1, 1], 1],
+       [ [1, 1, 1, 1, 0], 4],
+       [ [1, 1, 0, 0, 1], 2],
+       [ [2, 0, 1, 0, 1], 1],
+      ].each { | ab |
+        a, b = ab
         it {
-          pending "before branch"
-          expect { FibInterval.index_to_delete intervals }.not_to raise_error
+          expect(FibInterval.index_to_delete a).to eq b
         }
       }
     end
 
-    context "non-fib" do
+    context "contain skipped fib" do
       [
-       [ [8, 5, 4, 1, 1], 2 ],
+       [ [8, 5, 3, 1, 1], 4 ],
+       [ [8, 5, 4, 1, 1], 4 ],
+       [ [8, 3, 1, 1, 1], 3 ],
       ].each { | ab |
         a, b = ab
         it {
-          pending "before branch"
+          expect(FibInterval.index_to_delete a).to eq b
+        }
+      }
+    end
+
+    context "contain asc" do
+      [
+       [ [1, 3, 2, 1],    0],
+       [ [1, 1, 3, 2, 1], 0],
+       [ [2, 1, 3, 2, 1], 0],
+      ].each { | ab |
+        a, b = ab
+        it {
+          pending "after desc only"
           expect(FibInterval.index_to_delete a).to eq b
         }
       }

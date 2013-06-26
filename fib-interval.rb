@@ -40,21 +40,33 @@ module FibInterval
       @fibs = fibs
     end
 
-    def floor(x)
+    def floor(x, fibs = nil)
+      return nil if x <= 0
+      fibs = @fibs if fibs.nil?
       result = nil
-      @fibs.each { |f|
-        break if f > x
-        result = f
+      fibs.each { |f|
+        if f == x
+          return f
+        elsif f < x
+          result = f
+        else
+          break
+        end
       }
       result
     end
 
-    def last_skipped(desc_intervals)
+    def to_floor(intervals, fibs = nil)
+      intervals.map { |x| floor(x, fibs) }
+    end
+
+    def last_skipped(desc_intervals, fibs = nil)
+      fibs = @fibs if fibs.nil?
       current = floor desc_intervals.first
-      j = @fibs.index current
+      j = fibs.index current
       return nil if j == 0
 
-      target = @fibs[j-1]
+      target = fibs[j-1]
       skipped = nil
 
       desc_intervals.each_with_index { | x, i |
@@ -63,21 +75,21 @@ module FibInterval
 
         while y < target
           skipped = [target, i]
-          j = @fibs.index target
+          j = fibs.index target
           break if j == 0
-          target = @fibs[j-1]
+          target = fibs[j-1]
         end
 
         current = y
 
-        j = @fibs.index y
+        j = fibs.index y
         break if j == 0
-        target = @fibs[j-1]
+        target = fibs[j-1]
       }
 
       skipped
     end
-  end
+  end # FibHelper
 
   def self.copy_desc_part(intervals) # 5 4 3 2 2 | 3 3 4 2 1
     prev = nil
@@ -92,14 +104,25 @@ module FibInterval
     desc_part = copy_desc_part intervals
     return 0 if desc_part.size == 1
 
-    fh = FibHelper.new generate_fibs(intervals.length)
+    # puts "intervals = #{intervals.inspect}, desc_part.size = #{desc_part.size}"
+
+    fibs = generate_fibs intervals.length
+    fh = FibHelper.new fibs
+
     fib_i = fh.last_skipped desc_part
+    # puts "fib_i = #{fib_i.inspect}"
     return fib_i.last + 1 if fib_i
 
-    if intervals.size == desc_part.size
-      return 0
+    if desc_part.size == intervals.size
+      # (desc_part.first <= 2) ? 1 : 0
+      j = fibs.index fh.floor(desc_part.last)
+      if j == 0
+        0
+      else
+        #
+      end
     else
-      return 
+      1
     end
 
     #####
