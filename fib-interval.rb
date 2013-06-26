@@ -62,27 +62,27 @@ module FibInterval
 
     def last_skipped(desc_intervals, fibs = nil)
       fibs = @fibs if fibs.nil?
-      current = floor desc_intervals.first
+      floored = to_floor(desc_intervals, fibs)
+
+      current = floored.first
       j = fibs.index current
       return nil if j == 0
 
       target = fibs[j-1]
       skipped = nil
 
-      desc_intervals.each_with_index { | x, i |
-        y = floor(x)
-        next if y == current
+      floored.each_with_index { | x, i |
+        next if x == current
 
-        while y < target
+        while x < target
           skipped = [target, i]
           j = fibs.index target
           break if j == 0
           target = fibs[j-1]
         end
 
-        current = y
-
-        j = fibs.index y
+        current = x
+        j = fibs.index x
         break if j == 0
         target = fibs[j-1]
       }
