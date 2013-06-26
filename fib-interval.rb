@@ -57,12 +57,12 @@ module FibInterval
       target = @fibs[j-1]
       skipped = nil
 
-      desc_intervals.each { |x|
+      desc_intervals.each_with_index { | x, i |
         y = floor(x)
         next if y == current
 
         while y < target
-          skipped = target
+          skipped = [target, i]
           j = @fibs.index target
           break if j == 0
           target = @fibs[j-1]
