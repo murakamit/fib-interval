@@ -112,50 +112,6 @@ module FibInterval
 
     return 1 if intervals.size != desc_part.size
 
-    if intervals.last == 1
-      x = fh.floor intervals.first
-      (x == fibs.last) ? 0 : 1
-    else
-      0
-    end
-
-    # # (desc_part.first <= 2) ? 1 : 0
-    # j = fibs.index fh.floor(desc_part.last)
-    # if j == 0
-    #   0
-    # else
-    #   #
-    # end
-
-    #####
-    # prev = nil
-    # intervals.each_with_index { | x, i |
-    #   if prev
-    #     if prev == x
-    #       return i if x != 1
-    #     elsif prev < x
-    #       return i
-    #     end
-    #   end
-    #   prev = x
-    # }
-
-    # return 0 if (intervals[-2] == 2) && (intervals[-1] <= 1)
-  
-    # jprev = nil
-    # @fibs.each { | fib |
-    #   j = intervals.index(fib)
-    #   if jprev
-    #     case j
-    #     when nil
-    #       return 1 + jprev
-    #     when 0
-    #       return 1
-    #     end
-    #   end
-    #   jprev = j
-    # }
-
-    # nil # safety-net
+    ( fh.floor(intervals.first) == fibs.last ) ? 0 : 1
   end
 end
