@@ -1,8 +1,4 @@
-class FibInterval
-  attr_reader :holding_capacity, :fibs
-
-  HOLDING_CAPACITY_MIN = 4
-
+module FibInterval
   def self.generate_fibs(length) # [1, 2, 3, 5, 8, 13, 21, ...]
     ary = []
     x,y = 1,1
@@ -19,86 +15,103 @@ class FibInterval
     true
   end
 
-  def initialize(holding_capacity)
-    unless holding_capacity.is_a? Integer
-      raise TypeError.new "holding_capacity.class = #{holding_capacity.class}"
-    end
-    if holding_capacity < HOLDING_CAPACITY_MIN
-      raise ArgumentError.new "holding_capacity >= #{HOLDING_CAPACITY_MIN}"
-    end
-    @holding_capacity = holding_capacity
-    @holding_capacity.freeze
-    @intervals_capacity = holding_capacity - 1
-    @intervals_capacity.freeze
-  end
-
-  def index_to_delete(intervals)
-    if self.class.valid_intervals? intervals
-      get_index(intervals)
-    else
+  def self.index_to_delete(intervals)
+    unless valid_intervals? intervals
       raise ArgumentError.new "intervals = [#{intervals.join ', '}]"
     end
+
+    case intervals.size
+    when 0
+      return nil
+    when 1
+      return 0
+    end
+
+    i = intervals.index(0)
+    ( i ) ? i : main(intervals)
   end
 
-  private
-  def search_partial_fib_max(intervals, fibs)
-    result = nil
-    intervals.reverse.each_with_index { | x, i |
-      next if x < 2
-      break unless fibs.include? x
-      break if result && (x <= result.first)
-      result = [x, i]
-    }
-    result[1] = intervals.size + result[1] if result # adjust negative index
-    result
-  end
+  protected
 
-  def get_index(intervals)
-    return nil if intervals.size < @intervals_capacity
+  class FibHelper
+    attr_reader :fibs, :rfibs
 
-    j = intervals.index(0)
-    return j if j
+    def initialize(fibs)
+      @fibs = fibs
+    end
 
-    fibs = self.class.generate_fibs intervals.length
-    partial_fib_max = search_partial_fib_max(intervals, fibs)
+    def floor(x, fibs = nil)
+      return nil if x <= 0
+      fibs = @fibs if fibs.nil?
+      result = nil
+      fibs.each { |f|
+        if f == x
+          return f
+        elsif f < x
+          result = f
+        else
+          break
+        end
+      }
+      result
+    end
 
-#next
+    def to_floor(intervals, fibs = nil)
+      intervals.map { |x| floor(x, fibs) }
+    end
 
+    def last_skipped(desc_intervals, fibs = nil)
+      fibs = @fibs if fibs.nil?
+      floored = to_floor(desc_intervals, fibs)
 
-    return 1 if intervals[0] <= 2
+      current = floored.first
+      j = fibs.index current
+      return nil if j == 0
 
-    intervals.each_with_index { | x, i |
-      return i unless @fibs.include? x
-    }
+      target = fibs[j-1]
+      skipped = nil
 
+      floored.each_with_index { | x, i |
+        next if x == current
+
+        while x < target
+          skipped = [target, i]
+          j = fibs.index target
+          break if j == 0
+          target = fibs[j-1]
+        end
+
+        current = x
+        j = fibs.index x
+        break if j == 0
+        target = fibs[j-1]
+      }
+
+      skipped
+    end
+  end # FibHelper
+
+  def self.copy_desc_part(intervals) # 5 4 3 2 2 | 3 3 4 2 1
     prev = nil
     intervals.each_with_index { | x, i |
-      if prev
-        if prev == x
-          return i if x != 1
-        elsif prev < x
-          return i
-        end
-      end
+      return intervals[0 ... i] if prev && (prev < x) # [0, i)
       prev = x
     }
+    intervals.dup
+  end
 
-    return 0 if (intervals[-2] == 2) && (intervals[-1] <= 1)
-  
-    jprev = nil
-    @fibs.each { | fib |
-      j = intervals.index(fib)
-      if jprev
-        case j
-        when nil
-          return 1 + jprev
-        when 0
-          return 1
-        end
-      end
-      jprev = j
-    }
+  def self.main(intervals)
+    desc_part = copy_desc_part intervals
+    return 0 if desc_part.size == 1
 
-    nil # safety-net
+    fibs = generate_fibs desc_part.length
+    fh = FibHelper.new fibs
+
+    fib_i = fh.last_skipped desc_part
+    return fib_i.last + 1 if fib_i
+
+    return 1 if intervals.size != desc_part.size
+
+    ( fh.floor(intervals.first) == fibs.last ) ? 0 : 1
   end
 end
