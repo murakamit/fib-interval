@@ -53,12 +53,24 @@ describe FibInterval do
 
     it { expect(fibs).to eq [1, 2, 3, 5, 8] }
 
-    { 3 => 3, 4 => 3, 5 => 5 }.each_pair { | x,y |
+    { 3 => 3, 4 => 3, 5 => 5, 6 => 5, 9 => 8 }.each_pair { | x,y |
       it { expect(subject.floor x).to eq y }
     }
 
     [
-     [ [8, 5, 3, 2, 1], nil ]
+     [ [8, 5, 3, 2, 1], nil ],
+     [ [9, 5, 3, 2, 1], nil ],
+     [ [8, 7, 3, 2, 1], nil ],
+     [ [8, 4, 3, 2, 1], 5 ],
+     [ [8, 5, 3, 1, 1], 2 ],
+     [ [8, 4, 3, 1, 1], 2 ],
+     [ [1, 1, 1, 1, 1], nil ],
+     [ [2, 1, 1, 1, 1], nil ],
+     [ [3, 1, 1, 1, 1], 2 ],
+     [ [3, 2, 1, 1, 1], nil ],
+     [ [5, 1, 1, 1, 1], 2 ],
+     [ [ 8, 8, 5, 3, 2], nil ],
+     [ [13, 8, 5, 3, 2], nil ],
     ].each { | ab |
       a, b = ab
       it { expect(subject.last_skipped a).to eq b }

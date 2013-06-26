@@ -38,7 +38,6 @@ module FibInterval
 
     def initialize(fibs)
       @fibs = fibs
-      @rfibs = fibs.reverse
     end
 
     def floor(x)
@@ -50,14 +49,33 @@ module FibInterval
       result
     end
 
-    def last_skipped(intervals)
-      result = nil
-      intervals.each_with_index { | x,i |
-        f = floor(x)
-        break if f.nil?
-        result = [f, i]
+    def last_skipped(desc_intervals)
+      current = floor desc_intervals.first
+      j = @fibs.index current
+      return nil if j == 0
+
+      target = @fibs[j-1]
+      skipped = nil
+
+      desc_intervals.each { |x|
+        y = floor(x)
+        next if y == current
+
+        while y < target
+          skipped = target
+          j = @fibs.index target
+          break if j == 0
+          target = @fibs[j-1]
+        end
+
+        current = y
+
+        j = @fibs.index y
+        break if j == 0
+        target = @fibs[j-1]
       }
-      result
+
+      skipped
     end
   end
 
