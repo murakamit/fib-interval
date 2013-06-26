@@ -138,7 +138,7 @@ describe FibInterval do
       it { expect(FibInterval.index_to_delete []).to be_nil }
     end
 
-    describe do
+    describe "typically" do
       [
        [ [0, 0, 0, 0, 0], 0 ],
        [ [1, 1, 1, 1, 1], 1 ],
@@ -195,14 +195,12 @@ describe FibInterval do
     context "contain asc" do
       [
        [ [1, 3, 2, 1],    0],
-       [ [1, 1, 3, 2, 1], 0],
-       [ [2, 1, 3, 2, 1], 0],
+       [ [1, 1, 3, 2, 1], 1],
+       [ [2, 1, 3, 2, 1], 1],
+       [ [3, 2, 1, 3, 2, 1], 1],
       ].each { | ab |
         a, b = ab
-        it {
-          pending "after desc only"
-          expect(FibInterval.index_to_delete a).to eq b
-        }
+        it { expect(FibInterval.index_to_delete a).to eq b }
       }
     end
 
