@@ -39,45 +39,55 @@ describe FibInterval do
     end
   end
 
-  describe FibInterval::FibHelper do
-    let(:fib_len) { 5 }
-    let(:fibs) { FibInterval.generate_fibs fib_len }
-    subject {
-      class Spy < FibInterval::FibHelper
-        def initialize(x);  super x; end
-        def floor(x); super x; end
-        def last_skipped(x) super x; end
-      end
-      Spy.new fibs
-    }
-
-    it { expect(fibs).to eq [1, 2, 3, 5, 8] }
-
-    { 3 => 3, 4 => 3, 5 => 5, 6 => 5, 9 => 8 }.each_pair { | x,y |
-      it { expect(subject.floor x).to eq y }
-    }
-
+  describe "::copy_desc_part" do
     [
-     [ [8, 5, 3, 2, 1], nil ],
-     [ [9, 5, 3, 2, 1], nil ],
-     [ [8, 7, 3, 2, 1], nil ],
-     [ [8, 4, 3, 2, 1], [5, 1] ],
-     [ [8, 5, 3, 1, 1], [2, 3] ],
-     [ [8, 4, 3, 1, 1], [2, 3] ],
-     [ [1, 1, 1, 1, 1], nil ],
-     [ [2, 1, 1, 1, 1], nil ],
-     [ [3, 1, 1, 1, 1], [2, 1] ],
-     [ [3, 2, 1, 1, 1], nil ],
-     [ [5, 1, 1, 1, 1], [2, 1] ],
-     [ [ 8, 8, 5, 3, 2], nil ],
-     [ [13, 8, 5, 3, 2], nil ],
+     [ [1],             [1] ],
+     [ [3, 2, 1],       [3, 2, 1] ],
+     [ [3, 2, 3, 2, 1], [3, 2] ],
+     [ [1, 3, 2, 1],    [1] ],
     ].each { | ab |
       a, b = ab
-      it { expect(subject.last_skipped a).to eq b }
+      it { expect(FibInterval.copy_desc_part a).to eq b }
     }
   end
 
-  describe "#index_to_delete" do
+  describe FibInterval::FibHelper do
+    let(:fib_len) { 5 }
+    let(:fibs) { FibInterval.generate_fibs fib_len }
+    subject { FibInterval::FibHelper.new fibs }
+
+    it { expect(fibs).to eq [1, 2, 3, 5, 8] }
+
+    describe "::floor" do
+      { 3 => 3, 4 => 3, 5 => 5, 6 => 5, 9 => 8 }.each_pair { | x,y |
+        it { expect(subject.floor x).to eq y }
+      }
+    end
+
+    describe "::last_skipped" do
+      [
+       [ [ 8, 5, 3, 2, 1], nil ],
+       [ [ 9, 5, 3, 2, 1], nil ],
+       [ [ 8, 7, 3, 2, 1], nil ],
+       [ [ 8, 5, 3, 2, 2], nil ],
+       [ [ 8, 8, 5, 3, 2], nil ],
+       [ [13, 8, 5, 3, 2], nil ],
+       [ [ 8, 4, 3, 2, 1], [5, 1] ],
+       [ [ 8, 5, 3, 1, 1], [2, 3] ],
+       [ [ 8, 4, 3, 1, 1], [2, 3] ],
+       [ [ 1, 1, 1, 1, 1], nil ],
+       [ [ 2, 1, 1, 1, 1], nil ],
+       [ [ 3, 1, 1, 1, 1], [2, 1] ],
+       [ [ 3, 2, 1, 1, 1], nil ],
+       [ [ 5, 1, 1, 1, 1], [2, 1] ],
+      ].each { | ab |
+        a, b = ab
+        it { expect(subject.last_skipped a).to eq b }
+      }
+    end
+  end
+
+  describe "::index_to_delete" do
     describe "don't destroy arg" do
       [0, 1, 2, 3, 10, 100].each { |n|
         it do

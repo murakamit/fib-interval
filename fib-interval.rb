@@ -79,28 +79,28 @@ module FibInterval
     end
   end
 
-  def desc_part(intervals) # 5 4 3 2 2 | 3 3 4 2 1
+  def self.copy_desc_part(intervals) # 5 4 3 2 2 | 3 3 4 2 1
     prev = nil
     intervals.each_with_index { | x, i |
       return intervals[0 ... i] if prev && (prev < x) # [0, i)
       prev = x
     }
-    intervals
+    intervals.dup
   end
 
   def self.main(intervals)
-    original = intervals
-    fibs = generate_fibs original.length
-    # intervals = desc_part intervals
+    desc_part = copy_desc_part intervals
+    return 0 if desc_part.size == 1
 
+    fh = FibHelper.new generate_fibs(intervals.length)
+    fib_i = fh.last_skipped desc_part
+    return fib_i.last + 1 if fib_i
 
-    # ignore_last = intervals[0 .. -2]
-    # ignore_last.each_with_index { | x, i |
-    #   return i + 1 if x < rfibs[i]
-    # }
-
-    # 0
-
+    if intervals.size == desc_part.size
+      return 0
+    else
+      return 
+    end
 
     #####
     # prev = nil
