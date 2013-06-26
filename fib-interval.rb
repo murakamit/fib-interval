@@ -104,26 +104,28 @@ module FibInterval
     desc_part = copy_desc_part intervals
     return 0 if desc_part.size == 1
 
-    # puts "intervals = #{intervals.inspect}, desc_part.size = #{desc_part.size}"
-
-    fibs = generate_fibs intervals.length
+    fibs = generate_fibs desc_part.length
     fh = FibHelper.new fibs
 
     fib_i = fh.last_skipped desc_part
-    # puts "fib_i = #{fib_i.inspect}"
     return fib_i.last + 1 if fib_i
 
-    if desc_part.size == intervals.size
-      # (desc_part.first <= 2) ? 1 : 0
-      j = fibs.index fh.floor(desc_part.last)
-      if j == 0
-        0
-      else
-        #
-      end
+    return 1 if intervals.size != desc_part.size
+
+    if intervals.last == 1
+      x = fh.floor intervals.first
+      (x == fibs.last) ? 0 : 1
     else
-      1
+      0
     end
+
+    # # (desc_part.first <= 2) ? 1 : 0
+    # j = fibs.index fh.floor(desc_part.last)
+    # if j == 0
+    #   0
+    # else
+    #   #
+    # end
 
     #####
     # prev = nil
