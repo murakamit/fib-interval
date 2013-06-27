@@ -1,17 +1,17 @@
 #!/usr/bin/env ruby -w
 
+# ./00_step-by-step.rb <seq_maxsize> <n-step>
+
 require_relative '../fib-interval'
 
-N_STEP = 50
-ARY_MAXSIZE = 6
-
-$ary = []
+$seq = []
+$seq_maxsize = 6
 $counter = 0
 
 def show(del = nil)
   n = 3
   a = []
-  $ary.each_with_index { | x, i |
+  $seq.each_with_index { | x, i |
     if del && (i == del)
       y = x.to_s
       space = ' ' * (n - 1 - y.length)
@@ -26,7 +26,7 @@ end
 def get_intervals
   result = []
   prev = nil
-  $ary.each { |x|
+  $seq.each { |x|
     result << (x - prev) if prev
     prev = x
   }
@@ -36,20 +36,24 @@ end
 def step
   $counter += 1
   del = nil
-  del = FibInterval.index_to_delete get_intervals if $ary.size == ARY_MAXSIZE
+  del = FibInterval.index_to_delete get_intervals if $seq.size == $seq_maxsize
   show del
-  $ary.delete_at del if del
-  $ary << $counter
+  $seq.delete_at del if del
+  $seq << $counter
 end
 
-fibs = FibInterval.generate_fibs(ARY_MAXSIZE-1)
+v = ARGV[0].to_i
+$seq_maxsize = v if v >= 2
+v = ARGV[1].to_i
+n = ( v > 0 ) ? v : 50
+
+fibs = FibInterval.generate_fibs($seq_maxsize - 1)
 puts "fibs = #{fibs.join(', ')}"
 sum = fibs.inject { | accum, x | accum += x }
 puts "#{fibs.join(' + ')} = #{sum}"
-
-puts "ARY_MAXSIZE = #{ARY_MAXSIZE}"
-puts "#{N_STEP} step#{'s' if N_STEP > 1}"
-N_STEP.times { step }
+puts "seq_maxsize = #{$seq_maxsize}"
+puts "#{n} step#{'s' if n > 1}"
+n.times { step }
 
 
 ### result ###
@@ -57,7 +61,7 @@ N_STEP.times { step }
 $ ruby 00_step-by-step.rb
 fibs = 1, 2, 3, 5, 8
 1 + 2 + 3 + 5 + 8 = 19
-ARY_MAXSIZE = 6
+seq_maxsize = 6
 50 steps
 [] <- 1
 [  1] <- 2

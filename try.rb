@@ -32,7 +32,7 @@ end
 
 def show(seq, mark = nil)
   a = seq.dup
-  a[mark] = "<#{a[mark]}>" if mark
+  a[mark] = "*#{a[mark]}" if mark
   delimiter = ' '
   puts "sequence: #{a.join(delimiter)}"
   ivals = get_intervals(seq)
