@@ -10,10 +10,10 @@ def usage_then_exit
   exit 1
 end
 
-def get_intervals(seq)
+def get_intervals(list)
   result = []
   prev = nil
-  seq.each { |x|
+  list.each { |x|
     result << (x - prev) if prev
     prev = x
   }
@@ -30,12 +30,12 @@ def get_reverse_accum(ivals)
   result.reverse
 end
 
-def show(seq, mark = nil)
-  a = seq.dup
+def show(list, mark = nil)
+  a = list.dup
   a[mark] = "*#{a[mark]}" if mark
   delimiter = ' '
-  puts "sequence: #{a.join(delimiter)}"
-  ivals = get_intervals(seq)
+  puts "list: #{a.join(delimiter)}"
+  ivals = get_intervals(list)
   puts "intervals: (#{ivals.join(delimiter)})"
   totals = get_reverse_accum(ivals)
   puts "reverse accum: (#{totals.join(delimiter)})"
@@ -43,15 +43,15 @@ end
 
 usage_then_exit if ARGV.empty?
 
-seq = []
-ARGV.each { |s| seq << s.to_i if REX_INT =~ s }
-usage_then_exit if seq.empty?
-puts "fibs = #{FibInterval.generate_fibs(seq.size).join ' '}"
+list = []
+ARGV.each { |s| list << s.to_i if REX_INT =~ s }
+usage_then_exit if list.empty?
+puts "fibs = #{FibInterval.generate_fibs(list.size).join ' '}"
 
-seq2 = seq.dup
-i = FibInterval.index_to_delete get_intervals(seq)
-seq2.delete_at i if i
+list2 = list.dup
+i = FibInterval.index_to_delete get_intervals(list)
+list2.delete_at i if i
 
-show(seq, i)
+show(list, i)
 puts '-----'
-show(seq2)
+show(list2)
