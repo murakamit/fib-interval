@@ -17,7 +17,7 @@ def filename2counter(s)
   Time.new(*m[1 .. 3]).to_i / DAY1
 end
 
-def listup
+def update_list
   $list = []
   Dir.foreach('.') { |s|
     m = REX_FILENAME.match s
@@ -44,7 +44,7 @@ def delete_overflow
     s = $list[i].first
     puts "delete '#{s}'"
     File.delete s
-    listup
+    update_list
   end
 end
 
@@ -56,7 +56,7 @@ def backup(t)
 end
 
 def main(t)
-  listup
+  update_list
   delete_overflow
   backup(t)
 end
