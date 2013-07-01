@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby -w
 
-require_relative 'fib-interval'
+begin
+  require_relative 'fib-interval'
+rescue
+  require 'fib-interval'
+end
 
 REX_INT = /^[1-9][01-9]*$/
 
