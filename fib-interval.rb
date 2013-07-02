@@ -1,3 +1,6 @@
+# MURAKAMI Teiji
+# https://github.com/murakamit/githubtest
+
 module FibInterval
   def self.generate_fibs(length) # [1, 2, 3, 5, 8, 13, 21, ...]
     ary = []

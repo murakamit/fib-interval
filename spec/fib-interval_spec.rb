@@ -1,3 +1,6 @@
+# MURAKAMI Teiji
+# https://github.com/murakamit/githubtest
+
 require_relative '../fib-interval'
 
 describe FibInterval do

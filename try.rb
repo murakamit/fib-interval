@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby -w
 
+# MURAKAMI Teiji
+# https://github.com/murakamit/githubtest
+
 begin
   require_relative 'fib-interval'
 rescue

@@ -2,6 +2,9 @@
 
 # ./00_step-by-step.rb <list_maxsize> <n-step>
 
+# MURAKAMI Teiji
+# https://github.com/murakamit/githubtest
+
 require_relative '../fib-interval'
 
 $list = []
