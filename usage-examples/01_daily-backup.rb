@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby -w
 
 # MURAKAMI Teiji
-# https://github.com/murakamit/githubtest
+# https://github.com/murakamit/fib-interval
 
 require_relative '../fib-interval'
 require 'fileutils'

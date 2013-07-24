@@ -1,5 +1,5 @@
 # MURAKAMI Teiji
-# https://github.com/murakamit/githubtest
+# https://github.com/murakamit/fib-interval
 
 require_relative '../fib-interval'
 
