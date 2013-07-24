@@ -75,4 +75,4 @@ Example
 
 - - - - - - - - - - - - - - - - - - - -
 Author: MURAKAMI Teiji  
-GitHub: https://github.com/murakamit  
+GitHub: https://github.com/murakamit/fib-interval.git
