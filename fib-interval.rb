@@ -28,16 +28,16 @@ module FibInterval
       return nil
     when 1
       return 0
+    else
+      i = intervals.index(0)
+      ( i ) ? i : main(intervals)
     end
-
-    i = intervals.index(0)
-    ( i ) ? i : main(intervals)
   end
 
   protected
 
   class FibHelper
-    attr_reader :fibs, :rfibs
+    attr_reader :fibs
 
     def initialize(fibs)
       @fibs = fibs
